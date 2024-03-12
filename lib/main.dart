@@ -31,16 +31,40 @@ class Login extends StatelessWidget {
               "Login",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
             ),
-            const TextField(
-              textAlign: TextAlign.center,
-              decoration: InputDecoration(
-                labelText: "Username",
-                hintText: "Enter your Username",
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black)),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey)),
+                  // fillColor: Colors.grey,
+                  // filled: true,
+                  labelText: "Username",
+                  hintText: "Enter your Username",
+                  hintStyle: TextStyle(fontStyle: FontStyle.italic),
+                  prefixIcon: Icon(Icons.person),
+                  suffixIcon: Icon(Icons.verified_user_outlined),
+                ),
               ),
             ),
-            const TextField(
-              decoration: InputDecoration(
-                  labelText: "Password", hintText: "Enter your Password"),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey)),
+                    labelText: "Password",
+                    hintText: "Enter your Password",
+                    prefixIcon: Icon(Icons.key),
+                    suffixIcon: Icon(
+                      Icons.remove_red_eye_outlined,
+                    )),
+              ),
             ),
 
             // TextButton(onPressed: () {}, child: const Text("LOGIN"))
