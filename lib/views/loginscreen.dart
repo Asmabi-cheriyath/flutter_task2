@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/homepage.dart';
+import 'package:flutter_task2/views/signin.dart';
 
 class Login extends StatelessWidget {
   const Login({super.key});
@@ -10,13 +11,13 @@ class Login extends StatelessWidget {
     TextEditingController usernamecontroller = TextEditingController();
     TextEditingController passwordcontroller = TextEditingController();
 
-    void login(String username, double password) {
-      if (username == "asma" && password == 123) {
-        print("correct");
+    void login(String username, String password) {
+      if (username == "asma" && password == "123") {
+        print("Correct");
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => HomePage()));
+            .push(MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
-        print("invalied usename and password");
+        print("Invalied Username and Password");
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("INCORRECT USERNAME AND PASSWORD"),
         ));
@@ -24,28 +25,30 @@ class Login extends StatelessWidget {
     }
 
     return Scaffold(
-        body: Center(
-            child: Form(
+        body: Form(
       key: loginkey,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
             "Login",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 30,
+                color: Colors.deepPurple),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "required fields";
+                  return "Required Fields";
                 } else {
                   return null;
                 }
               },
               controller: usernamecontroller,
-              textAlign: TextAlign.center,
+              // textAlign: TextAlign.center,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black)),
@@ -58,8 +61,14 @@ class Login extends StatelessWidget {
                 labelText: "Username",
                 // hintText: "Enter your Username",
                 hintStyle: TextStyle(fontStyle: FontStyle.italic),
-                prefixIcon: Icon(Icons.person),
-                suffixIcon: Icon(Icons.verified_user_outlined),
+                prefixIcon: Icon(
+                  Icons.person,
+                  color: Colors.deepPurple,
+                ),
+                suffixIcon: Icon(
+                  Icons.verified_user_outlined,
+                  color: Colors.deepPurple,
+                ),
               ),
             ),
           ),
@@ -69,7 +78,7 @@ class Login extends StatelessWidget {
               obscureText: true,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "required field";
+                  return "Required Field";
                 } else {
                   return null;
                 }
@@ -84,9 +93,13 @@ class Login extends StatelessWidget {
                   //     borderSide: BorderSide(color: Colors.grey)),
                   //     errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                   labelText: "Password",
-                  prefixIcon: Icon(Icons.key),
+                  prefixIcon: Icon(
+                    Icons.key,
+                    color: Colors.deepPurple,
+                  ),
                   suffixIcon: Icon(
                     Icons.remove_red_eye_outlined,
+                    color: Colors.deepPurple,
                   )),
             ),
           ),
@@ -94,11 +107,26 @@ class Login extends StatelessWidget {
           TextButton(
             onPressed: () {
               if (loginkey.currentState!.validate()) {
-                login(usernamecontroller.text,
-                    double.parse(passwordcontroller.text));
+                login(usernamecontroller.text, passwordcontroller.text);
               }
             },
-            child: const Text("LOGIN"),
+            child: const Text(
+              "LOGIN",
+              selectionColor: Colors.amber,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text("Dont have an account?"),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const SignUp()));
+                },
+                child: const Text("SignUp"),
+              )
+            ],
           )
 
           // ElevatedButton(
@@ -118,6 +146,6 @@ class Login extends StatelessWidget {
           //     child: const Text("LOGIN"))
         ],
       ),
-    )));
+    ));
   }
 }
