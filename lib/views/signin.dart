@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/loginscreen.dart';
+import 'package:intl/intl.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -17,13 +18,43 @@ class _SignUpState extends State<SignUp> {
   TextEditingController passwordcontroller = TextEditingController();
   TextEditingController confirmpasswordcontroller = TextEditingController();
   TextEditingController dateofbirthcontroller = TextEditingController();
+  TextEditingController timecontroller = TextEditingController();
 
   String selectedgender = "";
+  String passwordsss = '';
+
+  Future<void> selectdate(context) async {
+    final DateTime? pickdate = await showDatePicker(
+        context: context, firstDate: DateTime(1850), lastDate: DateTime.now());
+    if (pickdate != null) {
+      String formatedate = DateFormat("dd-MMM-yyyy").format(pickdate);
+      setState(() {
+        dateofbirthcontroller.text = formatedate;
+      });
+    }
+  }
+
+  Future<void> selecttime(context) async {
+    final TimeOfDay? picktime =
+        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (picktime != null) {
+      String formattime = picktime.format(context);
+      setState(() {
+        timecontroller.text = formattime;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+          title: const Row(
+        children: [
+          Text("SIGNUP"),
+        ],
+      )),
 
       body: Center(
         child: SingleChildScrollView(
@@ -43,6 +74,9 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    onTap: () {
+                      signkey.currentState!.validate();
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return "Please Enter Your Name";
@@ -60,19 +94,41 @@ class _SignUpState extends State<SignUp> {
                         prefixIcon: Icon(Icons.person)),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(onTap: () {
-                    showDatePicker(context: context, firstDate: DateTime(1850), lastDate: DateTime.now());
-                  },
+                  child: TextFormField(
+                    onTap: () {
+                      selectdate(context);
+                      signkey.currentState!.validate();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter your birth";
+                      } else {
+                        return null;
+                      }
+                    },
                     controller: dateofbirthcontroller,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black)),
-                        labelText: "Date of Birth"),
+                        labelText: "Date of Birth",
+                        prefixIcon: Icon(Icons.calendar_month)),
                   ),
-
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    onTap: () {
+                      selecttime(context);
+                      signkey.currentState!.validate();
+                    },
+                    controller: timecontroller,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black)),
+                        labelText: "Time"),
+                  ),
                 ),
                 RadioListTile(
                   title: const Text("male"),
@@ -107,6 +163,9 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    onTap: () {
+                      signkey.currentState!.validate();
+                    },
                     controller: emailcontroller,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -132,13 +191,25 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    onTap: () {
+                      signkey.currentState!.validate();
+                    },
+                    obscureText: true,
                     controller: passwordcontroller,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "password required";
+                        return "Please enter Your Password";
+                      }
+                      if (value.length < 8) {
+                        return "Password must be at least 8 character";
                       } else {
                         return null;
                       }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        passwordsss = value;
+                      });
                     },
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(
@@ -150,10 +221,17 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
+                    onTap: () {
+                      signkey.currentState!.validate();
+                    },
+                    obscureText: true,
                     controller: confirmpasswordcontroller,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "confirm password";
+                        return "Please confirm your password";
+                      }
+                      if (value != passwordsss) {
+                        return "Password do not match";
                       } else {
                         return null;
                       }
