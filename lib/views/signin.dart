@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/loginscreen.dart';
@@ -22,6 +23,27 @@ class _SignUpState extends State<SignUp> {
 
   String selectedgender = "";
   String passwordsss = '';
+  bool ischecked = false;
+
+  List<String> items = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvanaathapuram',
+    'Thrissur',
+    'Wayanad'
+  ];
+  String? selectitems = 'Alappuzha';
+
+  // List dropDownListData= ['Alappuzha','Ernakulam','Idukki','Kannur','Kasaragod','Kollam','Kottayam','Kozhikode','Malappuram','Palakkad','Pathanamthitta','Thiruvanaathapuram','Thrissur','Wayanad'];
 
   Future<void> selectdate(context) async {
     final DateTime? pickdate = await showDatePicker(
@@ -160,6 +182,29 @@ class _SignUpState extends State<SignUp> {
                     });
                   },
                 ),
+
+                SizedBox(width: 450,
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),borderSide: BorderSide(width: 3,color: Colors.blue))),
+                      value: selectitems,
+                      items: items
+                          .map((item) => DropdownMenuItem(
+                                value: item,
+                                child: Text(
+                                  item,
+                                  style: const TextStyle(fontSize: 24),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (item) => 
+                        setState(() {
+                          selectitems=item;
+                        }),
+                        
+                      ),
+                ),
+
+
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -243,11 +288,34 @@ class _SignUpState extends State<SignUp> {
                         prefixIcon: Icon(Icons.key)),
                   ),
                 ),
-                TextButton(
+                Row(
+                  children: [
+                    Checkbox(
+                        value: ischecked,
+                        onChanged: (value) {
+                          setState(() {
+                            ischecked = value!;
+                          });
+                        }),
+                    const Text(
+                      "I agree these terms and condition",
+                      style: TextStyle(color: Colors.blue),
+                    )
+                  ],
+                ),
+                ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                            ischecked == false ? Colors.grey : Colors.red)),
                     onPressed: () {
-                      print(selectedgender);
                       if (signkey.currentState!.validate()) {
-                        Navigator.of(context).pop();
+                        ischecked == false
+                            ? ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content:
+                                    Text("please agree terms and condition"),
+                              ))
+                            : Navigator.of(context).pop();
                       }
                     },
                     child: const Text("Sign Up")),
