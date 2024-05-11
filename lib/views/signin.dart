@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/loginscreen.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +42,7 @@ class _SignUpState extends State<SignUp> {
     'Thrissur',
     'Wayanad'
   ];
-  String? selectitems = 'Alappuzha';
+  String? selecteditems = 'Alappuzha';
 
   // List dropDownListData= ['Alappuzha','Ernakulam','Idukki','Kannur','Kasaragod','Kollam','Kottayam','Kozhikode','Malappuram','Palakkad','Pathanamthitta','Thiruvanaathapuram','Thrissur','Wayanad'];
 
@@ -92,7 +93,7 @@ class _SignUpState extends State<SignUp> {
                       fontSize: 30,
                       color: Colors.deepPurple),
                 ),
-                const Text("Create your account"),
+                const Text("Create your Account"),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -110,6 +111,8 @@ class _SignUpState extends State<SignUp> {
                     controller: usernamecontroller,
                     // autovalidateMode: AutovalidateMode.onUserInteraction,
                     decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.amber,
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.black)),
                         labelText: "Username",
@@ -182,29 +185,29 @@ class _SignUpState extends State<SignUp> {
                     });
                   },
                 ),
-
-                SizedBox(width: 450,
+                SizedBox(
+                  width: 345,
                   child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12),borderSide: BorderSide(width: 3,color: Colors.blue))),
-                      value: selectitems,
-                      items: items
-                          .map((item) => DropdownMenuItem(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(fontSize: 24),
-                                ),
-                              ))
-                          .toList(),
-                      onChanged: (item) => 
-                        setState(() {
-                          selectitems=item;
-                        }),
-                        
-                      ),
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: const BorderSide(
+                                width: 3, color: Colors.blue))),
+                    value: selecteditems,
+                    items: items
+                        .map((value) => DropdownMenuItem(
+                              value: value,
+                              child: Text(
+                                value,
+                                // style: const TextStyle(fontSize: 20),
+                              ),
+                            ))
+                        .toList(),
+                    onChanged: (value) => setState(() {
+                      selecteditems = value;
+                    }),
+                  ),
                 ),
-
-
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
@@ -245,9 +248,10 @@ class _SignUpState extends State<SignUp> {
                       if (value == null || value.isEmpty) {
                         return "Please enter Your Password";
                       }
-                      if (value.length < 8) {
-                        return "Password must be at least 8 character";
-                      } else {
+                      // if (value.length < 8) {
+                      //   return "Password must be at least 8 character";
+                      // }
+                      else {
                         return null;
                       }
                     },
@@ -309,13 +313,20 @@ class _SignUpState extends State<SignUp> {
                             ischecked == false ? Colors.grey : Colors.red)),
                     onPressed: () {
                       if (signkey.currentState!.validate()) {
-                        ischecked == false
-                            ? ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content:
-                                    Text("please agree terms and condition"),
-                              ))
-                            : Navigator.of(context).pop();
+                        FirebaseAuth.instance.createUserWithEmailAndPassword(
+                            email: emailcontroller.text,
+                            password: passwordcontroller.text);
+                        // ischecked == false
+                        //     ? ScaffoldMessenger.of(context)
+                        //         .showSnackBar(const SnackBar(
+                        //         content:
+                        //             Text("please agree terms and condition"),
+                        //       ))
+                        //     : Navigator.of(context).pop();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()));
                       }
                     },
                     child: const Text("Sign Up")),
@@ -342,8 +353,6 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-
-
 
 // {
 //                         if(!RegExp("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+.[a-z]").hasMatch(value));
