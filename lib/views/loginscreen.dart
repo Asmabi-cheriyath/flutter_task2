@@ -1,16 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/homepage.dart';
 import 'package:flutter_task2/views/signin.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
   const Login({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    GlobalKey<FormState> loginkey = GlobalKey<FormState>();
-    TextEditingController usernamecontroller = TextEditingController();
-    TextEditingController passwordcontroller = TextEditingController();
+  State<Login> createState() => _LoginState();
+}
 
+GlobalKey<FormState> loginkey = GlobalKey<FormState>();
+TextEditingController emailcontroller = TextEditingController();
+TextEditingController passwordcontroller = TextEditingController();
+
+bool obsecuretext = true;
+
+class _LoginState extends State<Login> {
+  @override
+  Widget build(BuildContext context) {
     void login(String username, String password) {
       if (username == "asma" && password == "123") {
         print("Correct");
@@ -47,7 +55,7 @@ class Login extends StatelessWidget {
                   return null;
                 }
               },
-              controller: usernamecontroller,
+              controller: emailcontroller,
               // textAlign: TextAlign.center,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(
@@ -58,7 +66,7 @@ class Login extends StatelessWidget {
                 //     borderSide: BorderSide(color: Colors.grey)),
                 // fillColor: Colors.grey,
                 // filled: true,
-                labelText: "Username",
+                labelText: "E-mail",
                 // hintText: "Enter your Username",
                 hintStyle: TextStyle(fontStyle: FontStyle.italic),
                 prefixIcon: Icon(
@@ -75,7 +83,7 @@ class Login extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
-              obscureText: true,
+              obscureText: obsecuretext,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Required Field";
@@ -84,35 +92,52 @@ class Login extends StatelessWidget {
                 }
               },
               controller: passwordcontroller,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(
+              enabled: true,
+              decoration: InputDecoration(
+                  border: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black)),
-                  // enabledBorder: OutlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.black)),
-                  // focusedBorder: OutlineInputBorder(
-                  //     borderSide: BorderSide(color: Colors.grey)),
-                  //     errorBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black)),
                   labelText: "Password",
-                  prefixIcon: Icon(
+                  prefixIcon: const Icon(
                     Icons.key,
                     color: Colors.deepPurple,
                   ),
-                  suffixIcon: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color: Colors.deepPurple,
-                  )),
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obsecuretext = !obsecuretext;
+                        });
+                      },
+                      icon: obsecuretext
+                          ? const Icon(Icons.remove_red_eye)
+                          : const Icon(Icons.remove_red_eye_outlined))),
             ),
           ),
 
           TextButton(
             onPressed: () {
               if (loginkey.currentState!.validate()) {
-                login(usernamecontroller.text, passwordcontroller.text);
+                login(emailcontroller.text, passwordcontroller.text);
               }
             },
-            child: const Text(
-              "LOGIN",
-              selectionColor: Colors.amber,
+            child: InkWell(
+              onTap: () {
+                if (loginkey.currentState!.validate()) {
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: emailcontroller.text,
+                          password: passwordcontroller.text)
+                      .then((value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                  });
+                }
+              },
+              child: const Text(
+                "LOGIN",
+                selectionColor: Colors.amber,
+              ),
             ),
           ),
           Row(

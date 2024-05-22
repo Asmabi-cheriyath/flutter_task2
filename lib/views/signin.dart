@@ -1,10 +1,9 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_task2/views/database.dart';
 import 'package:flutter_task2/views/loginscreen.dart';
 import 'package:intl/intl.dart';
+import 'package:random_string/random_string.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -313,9 +312,28 @@ class _SignUpState extends State<SignUp> {
                             ischecked == false ? Colors.grey : Colors.red)),
                     onPressed: () {
                       if (signkey.currentState!.validate()) {
-                        FirebaseAuth.instance.createUserWithEmailAndPassword(
-                            email: emailcontroller.text,
-                            password: passwordcontroller.text);
+                        FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
+                                email: emailcontroller.text,
+                                password: passwordcontroller.text)
+                            .then((onValue) async {
+                          String id = randomAlphaNumeric(10);
+                          Map<String, dynamic> detailsInfoMap = {
+                            "Email": emailcontroller.text,
+                            "password": passwordcontroller.text,
+                            "Date of birth": dateofbirthcontroller.text,
+                            "Username": usernamecontroller.text,
+                            "id": id
+                          };
+                          await Databasedetails().adduser(detailsInfoMap, id);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Login()));
+                        }).onError((error, stackTrace) {
+                          print("Error,$error");
+                        });
+
                         // ischecked == false
                         //     ? ScaffoldMessenger.of(context)
                         //         .showSnackBar(const SnackBar(
@@ -323,10 +341,6 @@ class _SignUpState extends State<SignUp> {
                         //             Text("please agree terms and condition"),
                         //       ))
                         //     : Navigator.of(context).pop();
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const Login()));
                       }
                     },
                     child: const Text("Sign Up")),
