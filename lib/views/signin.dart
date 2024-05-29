@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_task2/views/database.dart';
 import 'package:flutter_task2/views/loginscreen.dart';
+import 'package:flutter_task2/views/usermodel.dart';
 import 'package:intl/intl.dart';
 import 'package:random_string/random_string.dart';
 
@@ -318,14 +319,8 @@ class _SignUpState extends State<SignUp> {
                                 password: passwordcontroller.text)
                             .then((onValue) async {
                           String id = randomAlphaNumeric(10);
-                          Map<String, dynamic> detailsInfoMap = {
-                            "Email": emailcontroller.text,
-                            "password": passwordcontroller.text,
-                            "Date of birth": dateofbirthcontroller.text,
-                            "Username": usernamecontroller.text,
-                            "id": id
-                          };
-                          await Databasedetails().adduser(detailsInfoMap, id);
+                          UserModel userDetails= UserModel(email: emailcontroller.text, password: passwordcontroller.text, username: usernamecontroller.text,dob: dateofbirthcontroller.text);
+                          await Databasedetails().adduser(userDetails.toJson(), id);
                           Navigator.push(
                               context,
                               MaterialPageRoute(

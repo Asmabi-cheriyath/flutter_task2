@@ -11,14 +11,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Stream? userstream;
-  getonload() async{
-    userstream= await Databasedetails().getuser();
-    setState(() {
-      
-    });
+  getonload() async {
+    userstream = await Databasedetails().getuser();
+    setState(() {});
   }
 
-@override
+  @override
   void initState() {
     getonload();
     super.initState();
@@ -47,11 +45,17 @@ class _HomePageState extends State<HomePage> {
                       child: Row(
                         children: [
                           Column(
-                            children: [Text(ds["name"])],
+                            children: [
+                              Text(ds["Username"]),
+                              Text(ds["Date of birth"]),
+                              Text(ds["Email"]),
+                            ],
                           ),
-                          IconButton(onPressed: ()async{
-                            await Databasedetails().removeuser(ds["id"]);
-                          }, icon: Icon(Icons.delete))
+                          IconButton(
+                              onPressed: () async {
+                                await Databasedetails().removeuser(ds["id"]);
+                              },
+                              icon: Icon(Icons.delete))
                         ],
                       ),
                     );

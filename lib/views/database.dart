@@ -14,4 +14,5 @@ class Databasedetails {
   Future removeuser(String id)async{
     return await FirebaseFirestore.instance.collection("user").doc(id).delete();
   }
+  
 }
